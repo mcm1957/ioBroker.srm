@@ -1,0 +1,85 @@
+{
+	"common": {
+		"name": "srm",
+		"version": "0.0.1",
+		"news": {
+			"0.0.1": {
+				"en": "initial release",
+				"de": "Erstveröffentlichung",
+				"ru": "Начальная версия",
+				"pt": "lançamento inicial",
+				"nl": "Eerste uitgave",
+				"fr": "Première version",
+				"it": "Versione iniziale",
+				"es": "Versión inicial",
+				"pl": "Pierwsze wydanie",
+				"zh-cn": "首次出版"
+			}
+		},
+		"title": "Synology Router",
+		"titleLang": {
+			"en": "Synology Router",
+			"de": "Synology Router",
+			"ru": "Synology Router",
+			"pt": "Synology Router",
+			"nl": "Synology Router",
+			"fr": "Synology Router",
+			"it": "Synology Router",
+			"es": "Synology Router",
+			"pl": "Synology Router",
+			"zh-cn": "Synology Router"
+		},
+		"desc": {
+			"en": "This adapter allows you to connect to a Synology router",
+			"de": "This adapter allows you to connect to a Synology router",
+			"ru": "This adapter allows you to connect to a Synology router",
+			"pt": "This adapter allows you to connect to a Synology router",
+			"nl": "This adapter allows you to connect to a Synology router",
+			"fr": "This adapter allows you to connect to a Synology router",
+			"it": "This adapter allows you to connect to a Synology router",
+			"es": "This adapter allows you to connect to a Synology router",
+			"pl": "This adapter allows you to connect to a Synology router",
+			"zh-cn": "This adapter allows you to connect to a Synology router"
+		},
+		"authors": [
+			"Stephan Stricker <stephan.stricker@outlook.com>"
+		],
+		"keywords": [
+			"Synology",
+			"SRM",
+			"Router"
+		],
+		"license": "MIT",
+		"platform": "Javascript/Node.js",
+		"main": "main.js",
+		"icon": "srm.png",
+		"enabled": true,
+		"extIcon": "https://raw.githubusercontent.com/stephan1827/ioBroker.srm/main/admin/srm.png",
+		"readme": "https://github.com/stephan1827/ioBroker.srm/blob/main/README.md",
+		"loglevel": "info",
+		"mode": "daemon",
+		"type": "hardware",
+		"compact": true,
+		"connectionType": "local",
+		"dataSource": "poll",
+		"adminUI": {
+			"config": "materialize"
+		},
+		"dependencies": [
+			{
+				"js-controller": ">=3.3.22"
+			}
+		],
+		"globalDependencies": [
+			{
+				"admin": ">=5.0.0"
+			}
+		]
+	},
+	"native": {
+		"User": "admin",
+		"Password": "42"
+	},
+	"objects": [],
+	"instanceObjects": []
+}

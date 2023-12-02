@@ -1,0 +1,59 @@
+{
+	"expert": "yes",
+	"cli": false,
+	"adapterName": "srm",
+	"title": "Synology Router",
+	"description": "This adapter allows you to connect to a Synology router",
+	"keywords": [
+		"Synology",
+		"SRM",
+		"Router"
+	],
+	"authorName": "Stephan Stricker",
+	"authorGithub": "stephan1827",
+	"authorEmail": "stephan.stricker@outlook.com",
+	"icon": {
+		"data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHgAAAA/CAYAAAArOQwGAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAA3aSURBVHhe7ZwHrBVVE8ePWBA7tqCoqFFEJSgoCoIiJCIogooKarBB7AXFjiXGgKIYY4MooBS7YBcbKKKCFRv2Boi9N1Qs55vf3J3l7N697z2v8n3v7bf/ZLJ3T9k95/znzJmZfXnLOOcWiTQRKZBDNIquBXKKguCcoyA45ygIzjkKgnOOguCcoyA45ygIzjkKgnOOguCcoyA45ygIzjkKgnOOguCcoyA45ygIzjkKgnOOguAMLLvsstGvho//a4KXWYa/WFqCPffc0/Xt29f9+eefUUk+wN9k+ZpEFiKzPC11bVcfpFGjRvHv0047zc+cOdP/8ssv/sknn0y0a+hS4x/doeHe0865zTff3A0YMMC1bt3arbXWWm655ZZzixcvdl9//bWbO3eumzBhgvvwww+1bdivPqNr167uwgsvdG3atHGrrrqqls2aNct16tRJf+cFte7ga665xn/++efCWWV89tln2i6rf30VUVrfvXt3f8EFF3gxyzqPp556KrNtfZcVV1wxs1wkm2Azt7feeqtOvK6gfdi/vko4Pkj+6aefdPwNjeAjjjjCjxgxwp9++um+W7duZfUVnSyZqzv66KPdvvvuG5WU8PPPP6spfvvtt93ChQvLHBKclMGDB9d7Ex2O7/fff3d//fVXdNdwsPHGG7tWrVq5DTfc0O244456jDZr1iyqLaFGLxpyl19++ejOuRdffNHtv//+btNNN40ffN5557nvv/8+auH0bIbkuoCzui6o1K6u/WvDr7/+2iAJhhvGLeZZQzs23GqrrRbVllCjk/XGG2+4LbfcUn/zoIEDB7rx48frfYiJEyeqA2aQ89q1b9/e/fHHH65x48a667/88ksnnmvmQqKJ7CgGyaDFm1XyaPvRRx9FrZzr37+/W3fddVWhpkyZ4sSsajltrb9ZFJRv1113dU2bNlUC33zzTScestYB6wM6duzoHnzwQbf66qu7p59+2nXu3FnLQdgO8H4U/J133nHffPNNVJpsl54nz+MeB64a2LzYPKxpCDHNut5suE8++cRdddVVUU0JNRL82muvqddsuP/++91ee+0V3S0BZcce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",
+		"extension": "png"
+	},
+	"features": [
+		"adapter"
+	],
+	"adminFeatures": [],
+	"type": "hardware",
+	"startMode": "daemon",
+	"connectionType": "local",
+	"dataSource": "poll",
+	"connectionIndicator": "no",
+	"adapterSettings": [
+		{
+			"key": "User",
+			"label": "User Name",
+			"inputType": "text",
+			"defaultValue": "admin"
+		},
+		{
+			"key": "Password",
+			"label": "Password",
+			"inputType": "text",
+			"defaultValue": "42"
+		}
+	],
+	"language": "JavaScript",
+	"nodeVersion": "16",
+	"adminUi": "html",
+	"releaseScript": "yes",
+	"indentation": "Tab",
+	"quotes": "double",
+	"es6class": "yes",
+	"tools": [
+		"ESLint",
+		"type checking"
+	],
+	"i18n": "words.js",
+	"gitRemoteProtocol": "HTTPS",
+	"license": "MIT License",
+	"dependabot": "yes",
+	"target": "github",
+	"creatorVersion": "2.3.0"
+}
