@@ -1,0 +1,44 @@
+{
+	"cli": true,
+	"target": "directory",
+	"adapterName": "srm",
+	"title": "Synology Router",
+	"description": "This adapater allows you to connect to a Synology router",
+	"keywords": [
+		"SRM",
+		"Synology",
+		"Router"
+	],
+	"expert": "yes",
+	"features": [
+		"adapter"
+	],
+	"adminFeatures": [],
+	"type": "hardware",
+	"startMode": "daemon",
+	"connectionType": "local",
+	"dataSource": "poll",
+	"connectionIndicator": "yes",
+	"language": "JavaScript",
+	"nodeVersion": "18",
+	"adminUi": "json",
+	"tools": [
+		"ESLint",
+		"type checking"
+	],
+	"releaseScript": "yes",
+	"devServer": "yes",
+	"devServerPort": 8081,
+	"indentation": "Tab",
+	"quotes": "single",
+	"es6class": "yes",
+	"authorName": "stephan stricker",
+	"authorGithub": "stephan1827",
+	"authorEmail": "stephan.stricker@outlook.com",
+	"gitRemoteProtocol": "HTTPS",
+	"gitCommit": "no",
+	"defaultBranch": "main",
+	"license": "MIT License",
+	"dependabot": "yes",
+	"creatorVersion": "2.5.0"
+}
