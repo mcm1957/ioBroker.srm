@@ -11,12 +11,7 @@
 	"plugins": ["security"],
 	"rules": {
 		"security/detect-object-injection": "error",
-		"indent": [
-			"error",
-			{
-				"SwitchCase": 1
-			}
-		],
+		"indent": "off",
 		"no-console": "off",
 		"no-unused-vars": [
 			"error",
