@@ -1,5 +1,9 @@
 {
-	"srm adapter settings": "Adapter settings for srm",
-	"option1": "option1",
-	"option2": "option2"
+	"srm adapter settings": "Adapter settings for SRM",
+	"Synology Router": "Synology Router",
+	"IP address of the Synology router": "IP address of the Synology router",
+	"User name": "User name",
+	"User password": "User password",
+	"Polling interval (in seconds)": "Polling interval (in seconds)",
+	"Allow anonymous usage statistics with Sentry": "Allow anonymous usage statistics with Sentry"
 }

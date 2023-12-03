@@ -2,15 +2,52 @@
 	"i18n": true,
 	"type": "panel",
 	"items": {
-		"option1": {
-			"type": "checkbox",
-			"label": "option1",
-			"newLine": true
-		},
-		"option2": {
+		"label": "Synology Router",
+		"IP": {
 			"type": "text",
-			"label": "option2",
-			"newLine": true
+			"sm": 12,
+			"md": 6,
+			"lg": 6,
+			"label": "IP address of the Synology router"
+		},
+		"port": {
+			"type": "text",
+			"label": "Port of the Synology router",
+			"sm": 12,
+			"md": 6,
+			"lg": 6,
+			"min": 1,
+			"max": 65535
+		},
+		"user": {
+			"newLine": true,
+			"type": "text",
+			"label": "User name",
+			"sm": 12,
+			"md": 6,
+			"lg": 6
+		},
+		"password": {
+			"type": "text",
+			"label": "User password",
+			"sm": 12,
+			"md": 6,
+			"lg": 6
+		},
+		"interval": {
+			"newLine": true,
+			"type": "number",
+			"label": "Polling interval (in seconds)",
+			"sm": 12,
+			"md": 6,
+			"lg": 6
+		},
+		"sentry": {
+			"type": "checkbox",
+			"label": "Allow anonymous usage statistics with Sentry",
+			"sm": 12,
+			"md": 6,
+			"lg": 6
 		}
 	}
 }

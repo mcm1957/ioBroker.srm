@@ -1,110 +1,120 @@
 {
-	"common": {
-		"name": "srm",
-		"version": "0.0.1",
-		"news": {
-			"0.0.1": {
-				"en": "initial release",
-				"de": "Erstveröffentlichung",
-				"ru": "Начальная версия",
-				"pt": "lançamento inicial",
-				"nl": "Eerste uitgave",
-				"fr": "Première version",
-				"it": "Versione iniziale",
-				"es": "Versión inicial",
-				"pl": "Pierwsze wydanie",
-				"uk": "Початкова версія",
-				"zh-cn": "首次出版"
-			}
-		},
-		"title": "Synology Router",
-		"titleLang": {
-			"en": "Synology Router",
-			"de": "Synology-Router",
-			"ru": "Маршрутизатор Synology",
-			"pt": "Roteador Synology",
-			"nl": "Synology-router",
-			"fr": "Routeur Synology",
-			"it": "SynologyRouter",
-			"es": "Enrutador Synology",
-			"pl": "Router Synology",
-			"uk": "Маршрутизатор Synology",
-			"zh-cn": "Synology 路由器"
-		},
-		"desc": {
-			"en": "This adapater allows you to connect to a Synology router",
-			"de": "Mit diesem Adapter können Sie eine Verbindung zu einem Synology-Router herstellen",
-			"ru": "Этот адаптер позволяет подключаться к маршрутизатору Synology.",
-			"pt": "Este adaptador permite que você se conecte a um roteador Synology",
-			"nl": "Met deze adapter kunt u verbinding maken met een Synology-router",
-			"fr": "Cet adaptateur vous permet de vous connecter à un routeur Synology",
-			"it": "Questo adattatore consente di connettersi a un router Synology",
-			"es": "Este adaptador le permite conectarse a un enrutador Synology",
-			"pl": "Ten adapter umożliwia połączenie z routerem Synology",
-			"uk": "Цей адаптер дозволяє підключатися до маршрутизатора Synology",
-			"zh-cn": "此适配器允许您连接到 Synology 路由器"
-		},
-		"authors": [
-			"stephan stricker <stephan.stricker@outlook.com>"
-		],
-		"keywords": [
-			"SRM",
-			"Synology",
-			"Router"
-		],
-		"license": "MIT",
-		"platform": "Javascript/Node.js",
-		"main": "main.js",
-		"icon": "srm.png",
-		"enabled": true,
-		"extIcon": "https://raw.githubusercontent.com/stephan1827/ioBroker.srm/main/admin/srm.png",
-		"readme": "https://github.com/stephan1827/ioBroker.srm/blob/main/README.md",
-		"loglevel": "info",
-		"mode": "daemon",
-		"type": "hardware",
-		"compact": true,
-		"connectionType": "local",
-		"dataSource": "poll",
-		"adminUI": {
-			"config": "json"
-		},
-		"dependencies": [
-			{
-				"js-controller": ">=3.3.22"
-			}
-		],
-		"globalDependencies": [
-			{
-				"admin": ">=5.1.13"
-			}
-		]
-	},
-	"native": {
-		"option1": true,
-		"option2": "42"
-	},
-	"objects": [],
-	"instanceObjects": [
-		{
-			"_id": "info",
-			"type": "channel",
-			"common": {
-				"name": "Information"
-			},
-			"native": {}
-		},
-		{
-			"_id": "info.connection",
-			"type": "state",
-			"common": {
-				"role": "indicator.connected",
-				"name": "Device or service connected",
-				"type": "boolean",
-				"read": true,
-				"write": false,
-				"def": false
-			},
-			"native": {}
-		}
-	]
+    "common": {
+        "name": "srm",
+        "version": "0.0.1",
+        "news": {
+            "0.0.1": {
+                "en": "initial release",
+                "de": "Erstveröffentlichung",
+                "ru": "Начальная версия",
+                "pt": "lançamento inicial",
+                "nl": "Eerste uitgave",
+                "fr": "Première version",
+                "it": "Versione iniziale",
+                "es": "Versión inicial",
+                "pl": "Pierwsze wydanie",
+                "uk": "Початкова версія",
+                "zh-cn": "首次出版"
+            }
+        },
+        "title": "Synology Router",
+        "titleLang": {
+            "en": "Synology Router",
+            "de": "Synology-Router",
+            "ru": "Маршрутизатор Synology",
+            "pt": "Roteador Synology",
+            "nl": "Synology-router",
+            "fr": "Routeur Synology",
+            "it": "SynologyRouter",
+            "es": "Enrutador Synology",
+            "pl": "Router Synology",
+            "uk": "Маршрутизатор Synology",
+            "zh-cn": "Synology 路由器"
+        },
+        "desc": {
+            "en": "This adapater allows you to connect to a Synology router",
+            "de": "Mit diesem Adapter können Sie eine Verbindung zu einem Synology-Router herstellen",
+            "ru": "Этот адаптер позволяет подключаться к маршрутизатору Synology.",
+            "pt": "Este adaptador permite que você se conecte a um roteador Synology",
+            "nl": "Met deze adapter kunt u verbinding maken met een Synology-router",
+            "fr": "Cet adaptateur vous permet de vous connecter à un routeur Synology",
+            "it": "Questo adattatore consente di connettersi a un router Synology",
+            "es": "Este adaptador le permite conectarse a un enrutador Synology",
+            "pl": "Ten adapter umożliwia połączenie z routerem Synology",
+            "uk": "Цей адаптер дозволяє підключатися до маршрутизатора Synology",
+            "zh-cn": "此适配器允许您连接到 Synology 路由器"
+        },
+        "authors": [
+            "stephan stricker <stephan.stricker@outlook.com>"
+        ],
+        "keywords": [
+            "SRM",
+            "Synology",
+            "Router"
+        ],
+        "license": "MIT",
+        "platform": "Javascript/Node.js",
+        "main": "main.js",
+        "icon": "srm.png",
+        "enabled": true,
+        "extIcon": "https://raw.githubusercontent.com/stephan1827/ioBroker.srm/main/admin/srm.png",
+        "readme": "https://github.com/stephan1827/ioBroker.srm/blob/main/README.md",
+        "loglevel": "info",
+        "mode": "daemon",
+        "type": "hardware",
+        "compact": true,
+        "connectionType": "local",
+        "dataSource": "poll",
+        "adminUI": {
+            "config": "json"
+        },
+        "dependencies": [
+            {
+                "js-controller": ">=3.3.22"
+            }
+        ],
+        "globalDependencies": [
+            {
+                "admin": ">=5.1.13"
+            }
+        ]
+    },
+    "encryptedNative": [
+        "password"
+    ],
+    "protectedNative": [
+        "password"
+    ],
+    "native": {
+        "IP": "192.168.0.1",
+        "user": "admin",
+        "password": "",
+        "interval": "60",
+        "port": "8001",
+        "sentry": true
+    },
+    "objects": [],
+    "instanceObjects": [
+        {
+            "_id": "info",
+            "type": "channel",
+            "common": {
+                "name": "Information"
+            },
+            "native": {}
+        },
+        {
+            "_id": "info.connection",
+            "type": "state",
+            "common": {
+                "role": "indicator.connected",
+                "name": "Device or service connected",
+                "type": "boolean",
+                "read": true,
+                "write": false,
+                "def": false
+            },
+            "native": {}
+        }
+    ]
 }
