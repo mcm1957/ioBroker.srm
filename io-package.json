@@ -77,7 +77,12 @@
             {
                 "admin": ">=5.1.13"
             }
-        ]
+        ],
+        "plugins": {
+            "sentry": {
+              "dsn": "https://3f3fe25e5ef666f7b2ed834ad6876b58@o4506314323656704.ingest.sentry.io/4506314327326720"
+            }
+          }
     },
     "encryptedNative": [
         "password"
