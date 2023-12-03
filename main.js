@@ -14,13 +14,11 @@ const utils = require('@iobroker/adapter-core');
 
 // ---------------------------------------------------------------------------------------------
 // Define variables
-const intervalId = null;
 let stopTimer = null;
 let isStopping = false;
 let stopExecute = false;
 
 class Srm extends utils.Adapter {
-
 	/**
 	 * @param {Partial<utils.AdapterOptions>} [options={}]
 	 */
@@ -34,8 +32,9 @@ class Srm extends utils.Adapter {
 		// this.on('objectChange', this.onObjectChange.bind(this));
 		// this.on('message', this.onMessage.bind(this));
 		this.on('unload', this.onUnload.bind(this));
-	}
 
+		this.intervalId = null;
+	}
 	/**
 	 * Is called when databases are connected and adapter received configuration.
 	 */
@@ -88,13 +87,14 @@ class Srm extends utils.Adapter {
 	 * Is called when adapter shuts down - callback has to be called under any circumstances!
 	 * @param {() => void} callback
 	 */
-	onUnload(callback) {
+	async onUnload(callback) {
 		try {
-			// Here you must clear all timeouts or intervals that may still be active
-			// clearTimeout(timeout1);
-			// clearTimeout(timeout2);
-			// ...
-			// clearInterval(interval1);
+			if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+            }
+            await client.logout();
+            isStopping = true;
 
 			callback();
 		} catch (e) {
@@ -132,7 +132,7 @@ class Srm extends utils.Adapter {
 			this.log.debug('Connecting to router ' + baseUrl);
 
 			// Login to router
-			const sid = await client.authenticate(baseUrl, null, { timeout: 5000 }, this.config.user, this.decrypt(this.config.password));
+			await client.authenticate(baseUrl, null, { timeout: 5000 }, this.config.user, this.decrypt(this.config.password));
 			this.log.info('Connection to router is ready, starting device checking');
 			stopExecute = false;
 			this.srmCyclicCall();
@@ -150,7 +150,7 @@ class Srm extends utils.Adapter {
 		if (stopTimer) clearTimeout(stopTimer);
 		if (!isStopping) {
 			if (stopExecute === false) {
-				const intervalId = setInterval(() => {
+				this.intervalId = setInterval(() => {
 					this.srmUpdateData(this);
 				}, this.config.interval*1000);
 			}
@@ -274,7 +274,7 @@ function stop_polling(adapter) {
 	if (adapter.common && adapter.common.mode == 'schedule') {
 		stopTimer = setTimeout(function () {
 			stopTimer = null;
-			if (intervalId) clearInterval(intervalId);
+			if (adapter.intervalId) clearInterval(adapter.intervalId);
 			isStopping = true;
 			stop_polling();
 		}, 30000);
