@@ -1,4 +1,5 @@
 {
+	"iobroker_path": "C:\\Users\\steph\\ioBroker\\node_modules\\iobroker.srm",
 	"eslint.enable": true,
 	"json.schemas": [
 		{

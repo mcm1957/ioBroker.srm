@@ -6,11 +6,18 @@
 // ---------------------------------------------------------------------------------------------
 // SRM connection
 const SrmClient = require(__dirname + '/lib/web_api.js').SrmClient;
-const client = new SrmClient()
-const objects = require('./lib/objects');
+let client = new SrmClient();
+let objects = require('./lib/objects');
 
 // iobroker core
 const utils = require('@iobroker/adapter-core');
+
+// ---------------------------------------------------------------------------------------------
+// Define variables
+var intervalId = null;
+var stopTimer = null;
+var isStopping = false;
+var stopExecute = false;
 
 class Srm extends utils.Adapter {
 
@@ -23,7 +30,7 @@ class Srm extends utils.Adapter {
 			name: 'srm',
 		});
 		this.on('ready', this.onReady.bind(this));
-		this.on('stateChange', this.onStateChange.bind(this));
+		// this.on('stateChange', this.onStateChange.bind(this));
 		// this.on('objectChange', this.onObjectChange.bind(this));
 		// this.on('message', this.onMessage.bind(this));
 		this.on('unload', this.onUnload.bind(this));
@@ -33,60 +40,48 @@ class Srm extends utils.Adapter {
 	 * Is called when databases are connected and adapter received configuration.
 	 */
 	async onReady() {
-		// Initialize your adapter here
-
 		// Reset the connection indicator during startup
 		this.setState('info.connection', false, true);
 
-		// The adapters config (in the instance object everything under the attribute "native") is accessible via
-		// this.config:
-		this.log.info('config option1: ' + this.config.option1);
-		this.log.info('config option2: ' + this.config.option2);
-
-		/*
-		For every state in the system there has to be also an object of type state
-		Here a simple template for a boolean variable named "testVariable"
-		Because every adapter instance uses its own unique namespace variable names can't collide with other adapters variables
-		*/
-		await this.setObjectNotExistsAsync('testVariable', {
-			type: 'state',
-			common: {
-				name: 'testVariable',
-				type: 'boolean',
-				role: 'indicator',
-				read: true,
-				write: true,
-			},
-			native: {},
-		});
-
-		// In order to get state updates, you need to subscribe to them. The following line adds a subscription for our variable we have created above.
-		this.subscribeStates('testVariable');
-		// You can also add a subscription for multiple states. The following line watches all states starting with "lights."
-		// this.subscribeStates('lights.*');
-		// Or, if you really must, you can also watch all states. Don't do this if you don't need to. Otherwise this will cause a lot of unnecessary load on the system:
-		// this.subscribeStates('*');
-
-		/*
-			setState examples
-			you will notice that each setState will cause the stateChange event to fire (because of above subscribeStates cmd)
-		*/
-		// the variable testVariable is set to true as command (ack=false)
-		await this.setStateAsync('testVariable', true);
-
-		// same thing, but the value is flagged "ack"
-		// ack should be always set to true if the value is received from or acknowledged from the target system
-		await this.setStateAsync('testVariable', { val: true, ack: true });
-
-		// same thing, but the state is deleted after 30s (getState will return null afterwards)
-		await this.setStateAsync('testVariable', { val: true, ack: true, expire: 30 });
-
-		// examples for the checkPassword/checkGroup functions
-		let result = await this.checkPasswordAsync('admin', 'iobroker');
-		this.log.info('check user admin pw iobroker: ' + result);
-
-		result = await this.checkGroupAsync('admin', 'admin');
-		this.log.info('check group user admin group admin: ' + result);
+		try {
+			if (await this.setSentryLogging(this.config.sentry)) return;
+		} catch (e) {
+			this.log.error('Error in main(): ' + e);
+		}
+	
+		// Create router default states
+		await Promise.all(objects.router.map(async o => {
+			// @ts-ignore
+			await this.setObjectNotExistsAsync('router' + (o._id ? '.' + o._id : ''), o);
+			this.log.debug('Create state for router.' + o._id);
+		}));
+	
+		// Create traffic default states
+		await Promise.all(objects.devices.map(async o => {
+				// @ts-ignore
+				await this.setObjectNotExistsAsync('devices' + (o._id ? '.' + o._id : ''), o);
+				this.log.debug('Create state for devices.' + o._id);
+			}));
+	
+		// Create traffic default states
+		await Promise.all(objects.traffic.map(async o => {
+			// @ts-ignore
+			await this.setObjectNotExistsAsync('traffic' + (o._id ? '.' + o._id : ''), o);
+			this.log.debug('Create state for traffic.' + o._id);
+		}));
+	
+		// Validate IP address
+		let checkRouterAddress = this.validateIPaddress(this.config.IP);
+		if (!checkRouterAddress) {
+			this.log.error('The server address ' + this.config.IP + ' is not a valid IP-Address');
+			stop_polling(this);
+			return;
+		}
+	
+		// Force polling minimum to 60 seconds
+		if (this.config.interval < 60) { this.config.interval = 60; }
+	
+		this.srmConnect();
 	}
 
 	/**
@@ -107,55 +102,149 @@ class Srm extends utils.Adapter {
 		}
 	}
 
-	// If you need to react to object changes, uncomment the following block and the corresponding line in the constructor.
-	// You also need to subscribe to the objects with `this.subscribeObjects`, similar to `this.subscribeStates`.
-	// /**
-	//  * Is called if a subscribed object changes
-	//  * @param {string} id
-	//  * @param {ioBroker.Object | null | undefined} obj
-	//  */
-	// onObjectChange(id, obj) {
-	// 	if (obj) {
-	// 		// The object was changed
-	// 		this.log.info(`object ${id} changed: ${JSON.stringify(obj)}`);
-	// 	} else {
-	// 		// The object was deleted
-	// 		this.log.info(`object ${id} deleted`);
-	// 	}
-	// }
+	// ---------------------------------------------------------------------------------------------
+	// Change the external Sentry Logging. After changing the Logging
+	// the adapter restarts once
+	// @param {*} value : this.config.sentry_enable for example
+	async setSentryLogging(value) {
+		try {
+			value = value === true;
+			let idSentry = `system.this.${this.namespace}.plugins.sentry.enabled`;
+			let stateSentry = await this.getForeignStateAsync(idSentry);
+			if (stateSentry && stateSentry.val !== value) {
+				await this.setForeignStateAsync(idSentry, value);
+				this.log.info('Restarting adapter because of changed sentry settings');
+				this.restart();
+				return true;
+			}
+		} catch (error) {
+			return false;
+		}
+		return false;
+	}
 
-	/**
-	 * Is called if a subscribed state changes
-	 * @param {string} id
-	 * @param {ioBroker.State | null | undefined} state
-	 */
-	onStateChange(id, state) {
-		if (state) {
-			// The state was changed
-			this.log.info(`state ${id} changed: ${state.val} (ack = ${state.ack})`);
-		} else {
-			// The state was deleted
-			this.log.info(`state ${id} deleted`);
+	// ---------------------------------------------------------------------------------------------
+	// Connect to Synology router
+	async srmConnect() {
+		try {
+			// Create base URL
+			const baseUrl = 'https://' + this.config.IP + ':' + this.config.port;
+			this.log.debug('Connecting to router ' + baseUrl);
+
+			// Login to router
+			const sid = await client.authenticate(baseUrl, null, { timeout: 5000 }, this.config.user, this.config.password);
+			this.log.info('Connection to router is ready, starting device checking');
+			this.setState('info.connection', true, true);
+			stopExecute = false;
+			this.srmCyclicCall();
+
+		} catch (error) {
+			this.log.error(error);
+			stop_polling(this);
+			return;
 		}
 	}
 
-	// If you need to accept messages in your adapter, uncomment the following block and the corresponding line in the constructor.
-	// /**
-	//  * Some message was sent to this instance over message box. Used by email, pushover, text2speech, ...
-	//  * Using this method requires "common.messagebox" property to be set to true in io-package.json
-	//  * @param {ioBroker.Message} obj
-	//  */
-	// onMessage(obj) {
-	// 	if (typeof obj === 'object' && obj.message) {
-	// 		if (obj.command === 'send') {
-	// 			// e.g. send email or pushover or whatever
-	// 			this.log.info('send command');
+	// ---------------------------------------------------------------------------------------------
+	// Run in circles until stopped
+	srmCyclicCall() {
+		if (stopTimer) clearTimeout(stopTimer);
+		if (!isStopping) {
+			if (stopExecute === false) {
+				this.srmUpdateData();
+				intervalId = setInterval(() => {
+					this.srmUpdateData();
+				}, this.config.interval*1000);
+			}
+		}
+	}
 
-	// 			// Send response in callback if required
-	// 			if (obj.callback) this.sendTo(obj.from, obj.command, 'Message received', obj.callback);
-	// 		}
-	// 	}
-	// }
+	// ---------------------------------------------------------------------------------------------
+	// Get data from Synology router
+	async srmUpdateData() {
+		try {
+			// Get connection status
+			const conStatus = await client.getConnectionStatus();
+			this.log.debug(`Connection status: ${JSON.stringify(conStatus)}`);
+			await this.setStateAsync('router.IPV4_status', { val: conStatus.ipv4.conn_status, ack: true });
+			await this.setStateAsync('router.IPV4_IP', { val: conStatus.ipv4.ip, ack: true });
+			await this.setStateAsync('router.IPV6_status', { val: conStatus.ipv6.conn_status, ack: true });
+			await this.setStateAsync('router.IPV6_IP', { val: conStatus.ipv6.ip, ack: true });
+
+			// Get complete device list
+			const deviceAll = await client.getAllDevices();
+			this.log.debug(`Device list all: ${JSON.stringify(deviceAll)}`);
+			await this.setStateAsync('devices.all', { val: JSON.stringify(deviceAll), ack: true });
+
+			// Get active device list
+			let deviceOnline = deviceAll.filter(item => item.is_online === true);
+			this.log.debug(`Device list online: ${JSON.stringify(deviceOnline)}`);
+			await this.setStateAsync('devices.online', { val: JSON.stringify(deviceOnline), ack: true });
+
+			// Get active WIFI device list
+			let deviceOnlineWifi = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === true);
+			this.log.debug(`Device list WIFI online: ${JSON.stringify(deviceOnlineWifi)}`);
+			await this.setStateAsync('devices.online_wifi', { val: JSON.stringify(deviceOnlineWifi), ack: true });
+
+			// Get active ethernet device list
+			let deviceOnlineEthernet = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === false);
+			this.log.debug(`Device list ethernet online: ${JSON.stringify(deviceOnlineEthernet)}`);
+			await this.setStateAsync('devices.online_ethernet', { val: JSON.stringify(deviceOnlineEthernet), ack: true });
+
+			// Get mesh node data
+			const meshNodes = await client.getMeshNodes();
+			this.log.debug(`Mesh nodes: ${JSON.stringify(meshNodes)}`);
+			await this.setStateAsync('devices.mesh', { val: JSON.stringify(meshNodes), ack: true });
+			for (let node of meshNodes) {
+				// Create mesh node default states
+				await Promise.all(objects.mesh.map(async o => {
+					// @ts-ignore
+					await this.setObjectNotExistsAsync('mesh.' + node.name + (o._id ? '.' + o._id : ''), o);
+					this.log.debug('Create state for mesh' + node.name + '.' + o._id);
+				}));
+
+				await this.setStateAsync('mesh.' + node.name + '.band', { val: node.band, ack: true });
+				await this.setStateAsync('mesh.' + node.name + '.connected_devices', { val: node.connected_devices, ack: true });
+				await this.setStateAsync('mesh.' + node.name + '.current_rate_rx', { val: node.current_rate_rx, ack: true });
+				await this.setStateAsync('mesh.' + node.name + '.current_rate_tx', { val: node.current_rate_tx, ack: true });
+				await this.setStateAsync('mesh.' + node.name + '.network_status', { val: node.network_status, ack: true });
+				await this.setStateAsync('mesh.' + node.name + '.node_id', { val: node.node_id, ack: true });
+				await this.setStateAsync('mesh.' + node.name + '.node_status', { val: node.node_status, ack: true });
+				await this.setStateAsync('mesh.' + node.name + '.parent_node_id', { val: node.parent_node_id, ack: true });
+				await this.setStateAsync('mesh.' + node.name + '.signal_strength', { val: node.signalstrength, ack: true });
+			}
+			// await this.setStateAsync('traffic.live', { val: JSON.stringify(trafficLive), ack: true });
+
+			// Get live traffic
+			const trafficLive = await client.getTraffic('live');
+			this.log.debug(`Live traffic: ${JSON.stringify(trafficLive)}`);
+			await this.setStateAsync('traffic.live', { val: JSON.stringify(trafficLive), ack: true });
+
+			// Get daily traffic
+			// const trafficDaily = await client.getTraffic('day');
+			// this.log.debug(`Daily traffic: ${JSON.stringify(trafficDaily)}`);
+			// await this.setStateAsync('traffic.daily', { val: JSON.stringify(trafficDaily), ack: true });
+			
+		} catch (error) {
+			if (String(error) === 'Error: Not connected') {
+				this.log.error('Router is not connected, try new reconnect in 90s');
+				stopExecute = true;
+				setTimeout(function () {
+					srmReconnect(this);
+				}, 90000);
+			} else {
+				this.log.error(error);
+				stopExecute = true;
+			}
+		}
+	}
+
+	// ---------------------------------------------------------------------------------------------
+	// Validate IP address
+	validateIPaddress(inputText) {
+		const ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+		return !!inputText.match(ipformat);
+	}
 
 }
 
@@ -168,4 +257,28 @@ if (require.main !== module) {
 } else {
 	// otherwise start the instance directly
 	new Srm();
+}
+
+// ---------------------------------------------------------------------------------------------
+// Reconnect to Synology router
+function srmReconnect(adapter) {
+	client = null;
+	client = new SrmClient();
+	adapter.srmConnect();
+}
+
+// ---------------------------------------------------------------------------------------------
+// Is called when adapter shuts down 
+function stop_polling(adapter) {
+	if (stopTimer) clearTimeout(stopTimer);
+
+	// Stop only if schedule mode
+	if (adapter.common && adapter.common.mode == 'schedule') {
+		stopTimer = setTimeout(function () {
+			stopTimer = null;
+			if (intervalId) clearInterval(intervalId);
+			isStopping = true;
+			stop_polling();
+		}, 30000);
+	}
 }

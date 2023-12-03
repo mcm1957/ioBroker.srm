@@ -13,7 +13,6 @@
 		"security/detect-object-injection": "error",
 		"indent": [
 			"error",
-			"tab",
 			{
 				"SwitchCase": 1
 			}
