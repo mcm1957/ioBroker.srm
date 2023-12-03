@@ -7,17 +7,17 @@
 // SRM connection
 const SrmClient = require(__dirname + '/lib/web_api.js').SrmClient;
 let client = new SrmClient();
-let objects = require('./lib/objects');
+const objects = require('./lib/objects');
 
 // iobroker core
 const utils = require('@iobroker/adapter-core');
 
 // ---------------------------------------------------------------------------------------------
 // Define variables
-var intervalId = null;
-var stopTimer = null;
-var isStopping = false;
-var stopExecute = false;
+const intervalId = null;
+let stopTimer = null;
+let isStopping = false;
+let stopExecute = false;
 
 class Srm extends utils.Adapter {
 
@@ -48,39 +48,39 @@ class Srm extends utils.Adapter {
 		} catch (e) {
 			this.log.error('Error in main(): ' + e);
 		}
-	
+
 		// Create router default states
 		await Promise.all(objects.router.map(async o => {
 			// @ts-ignore
 			await this.setObjectNotExistsAsync('router' + (o._id ? '.' + o._id : ''), o);
 			this.log.debug('Create state for router.' + o._id);
 		}));
-	
+
 		// Create traffic default states
 		await Promise.all(objects.devices.map(async o => {
 				// @ts-ignore
 				await this.setObjectNotExistsAsync('devices' + (o._id ? '.' + o._id : ''), o);
 				this.log.debug('Create state for devices.' + o._id);
 			}));
-	
+
 		// Create traffic default states
 		await Promise.all(objects.traffic.map(async o => {
 			// @ts-ignore
 			await this.setObjectNotExistsAsync('traffic' + (o._id ? '.' + o._id : ''), o);
 			this.log.debug('Create state for traffic.' + o._id);
 		}));
-	
+
 		// Validate IP address
-		let checkRouterAddress = this.validateIPaddress(this.config.IP);
+		const checkRouterAddress = this.validateIPaddress(this.config.IP);
 		if (!checkRouterAddress) {
 			this.log.error('The server address ' + this.config.IP + ' is not a valid IP-Address');
 			stop_polling(this);
 			return;
 		}
-	
+
 		// Force polling minimum to 60 seconds
 		if (this.config.interval < 60) { this.config.interval = 60; }
-	
+
 		this.srmConnect();
 	}
 
@@ -109,8 +109,8 @@ class Srm extends utils.Adapter {
 	async setSentryLogging(value) {
 		try {
 			value = value === true;
-			let idSentry = `system.this.${this.namespace}.plugins.sentry.enabled`;
-			let stateSentry = await this.getForeignStateAsync(idSentry);
+			const idSentry = `system.this.${this.namespace}.plugins.sentry.enabled`;
+			const stateSentry = await this.getForeignStateAsync(idSentry);
 			if (stateSentry && stateSentry.val !== value) {
 				await this.setForeignStateAsync(idSentry, value);
 				this.log.info('Restarting adapter because of changed sentry settings');
@@ -132,9 +132,8 @@ class Srm extends utils.Adapter {
 			this.log.debug('Connecting to router ' + baseUrl);
 
 			// Login to router
-			const sid = await client.authenticate(baseUrl, null, { timeout: 5000 }, this.config.user, this.config.password);
+			const sid = await client.authenticate(baseUrl, null, { timeout: 5000 }, this.config.user, this.decrypt(this.config.password));
 			this.log.info('Connection to router is ready, starting device checking');
-			this.setState('info.connection', true, true);
 			stopExecute = false;
 			this.srmCyclicCall();
 
@@ -151,9 +150,8 @@ class Srm extends utils.Adapter {
 		if (stopTimer) clearTimeout(stopTimer);
 		if (!isStopping) {
 			if (stopExecute === false) {
-				this.srmUpdateData();
-				intervalId = setInterval(() => {
-					this.srmUpdateData();
+				const intervalId = setInterval(() => {
+					this.srmUpdateData(this);
 				}, this.config.interval*1000);
 			}
 		}
@@ -161,7 +159,7 @@ class Srm extends utils.Adapter {
 
 	// ---------------------------------------------------------------------------------------------
 	// Get data from Synology router
-	async srmUpdateData() {
+	async srmUpdateData(adapter) {
 		try {
 			// Get connection status
 			const conStatus = await client.getConnectionStatus();
@@ -177,17 +175,17 @@ class Srm extends utils.Adapter {
 			await this.setStateAsync('devices.all', { val: JSON.stringify(deviceAll), ack: true });
 
 			// Get active device list
-			let deviceOnline = deviceAll.filter(item => item.is_online === true);
+			const deviceOnline = deviceAll.filter(item => item.is_online === true);
 			this.log.debug(`Device list online: ${JSON.stringify(deviceOnline)}`);
 			await this.setStateAsync('devices.online', { val: JSON.stringify(deviceOnline), ack: true });
 
 			// Get active WIFI device list
-			let deviceOnlineWifi = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === true);
+			const deviceOnlineWifi = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === true);
 			this.log.debug(`Device list WIFI online: ${JSON.stringify(deviceOnlineWifi)}`);
 			await this.setStateAsync('devices.online_wifi', { val: JSON.stringify(deviceOnlineWifi), ack: true });
 
 			// Get active ethernet device list
-			let deviceOnlineEthernet = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === false);
+			const deviceOnlineEthernet = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === false);
 			this.log.debug(`Device list ethernet online: ${JSON.stringify(deviceOnlineEthernet)}`);
 			await this.setStateAsync('devices.online_ethernet', { val: JSON.stringify(deviceOnlineEthernet), ack: true });
 
@@ -195,7 +193,7 @@ class Srm extends utils.Adapter {
 			const meshNodes = await client.getMeshNodes();
 			this.log.debug(`Mesh nodes: ${JSON.stringify(meshNodes)}`);
 			await this.setStateAsync('devices.mesh', { val: JSON.stringify(meshNodes), ack: true });
-			for (let node of meshNodes) {
+			for (const node of meshNodes) {
 				// Create mesh node default states
 				await Promise.all(objects.mesh.map(async o => {
 					// @ts-ignore
@@ -224,13 +222,13 @@ class Srm extends utils.Adapter {
 			// const trafficDaily = await client.getTraffic('day');
 			// this.log.debug(`Daily traffic: ${JSON.stringify(trafficDaily)}`);
 			// await this.setStateAsync('traffic.daily', { val: JSON.stringify(trafficDaily), ack: true });
-			
+
 		} catch (error) {
 			if (String(error) === 'Error: Not connected') {
 				this.log.error('Router is not connected, try new reconnect in 90s');
 				stopExecute = true;
 				setTimeout(function () {
-					srmReconnect(this);
+					srmReconnect(adapter);
 				}, 90000);
 			} else {
 				this.log.error(error);
@@ -268,7 +266,7 @@ function srmReconnect(adapter) {
 }
 
 // ---------------------------------------------------------------------------------------------
-// Is called when adapter shuts down 
+// Is called when adapter shuts down
 function stop_polling(adapter) {
 	if (stopTimer) clearTimeout(stopTimer);
 
