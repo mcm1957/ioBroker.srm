@@ -1,15 +1,16 @@
+// ---------------------------------------------------------------------------------------------
+// ioBroker Synology router SRM adapter
+// ---------------------------------------------------------------------------------------------
 'use strict';
 
-/*
- * Created with @iobroker/create-adapter v2.5.0
- */
+// ---------------------------------------------------------------------------------------------
+// SRM connection
+const SrmClient = require(__dirname + '/lib/web_api.js').SrmClient;
+const client = new SrmClient()
+const objects = require('./lib/objects');
 
-// The adapter-core module gives you access to the core ioBroker functions
-// you need to create an adapter
+// iobroker core
 const utils = require('@iobroker/adapter-core');
-
-// Load your modules here, e.g.:
-// const fs = require("fs");
 
 class Srm extends utils.Adapter {
 

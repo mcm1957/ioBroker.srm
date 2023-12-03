@@ -8,8 +8,9 @@
 	"extends": [
 		"eslint:recommended"
 	],
-	"plugins": [],
+	"plugins": ["security"],
 	"rules": {
+		"security/detect-object-injection": "error",
 		"indent": [
 			"error",
 			"tab",
