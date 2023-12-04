@@ -137,7 +137,7 @@ class Srm extends utils.Adapter {
             this.srmCyclicCall();
 
         } catch (error) {
-            this.log.error(error.message + " for " + this.config.IP);
+            this.log.error(error.message + ' for ' + this.config.IP);
             if (error.message === 'Request timeout') {
                 this.srmReconnect();
             } else {
@@ -214,9 +214,9 @@ class Srm extends utils.Adapter {
             this.log.debug(`Device list WIFI online: ${JSON.stringify(deviceOnlineWifi)}`);
             await this.setStateAsync('devices.online_wifi', { val: JSON.stringify(deviceOnlineWifi), ack: true });
 
-            // Get active ethernet device list
+            // Get active Ethernet device list
             const deviceOnlineEthernet = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === false);
-            this.log.debug(`Device list ethernet online: ${JSON.stringify(deviceOnlineEthernet)}`);
+            this.log.debug(`Device list Ethernet online: ${JSON.stringify(deviceOnlineEthernet)}`);
             await this.setStateAsync('devices.online_ethernet', { val: JSON.stringify(deviceOnlineEthernet), ack: true });
 
             // Get mesh node data
