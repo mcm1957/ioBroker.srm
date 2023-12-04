@@ -131,9 +131,13 @@ class Srm extends utils.Adapter {
             this.log.debug('Connecting to router ' + baseUrl);
 
             // Login to router
-            await this.client.authenticate(baseUrl, null, { timeout: 5000 }, this.config.user, this.decrypt(this.config.password));
+            await this.client.authenticate(baseUrl, null, { timeout: 5000 }, this.config.user, this.config.password);
             this.log.info('Connection to router is ready, starting device checking');
             this.stopExecute = false;
+
+            // Set connection indicator
+            this.setState('info.connection', true, true);
+
             this.srmCyclicCall();
 
         } catch (error) {
@@ -180,6 +184,7 @@ class Srm extends utils.Adapter {
         if (this.stopTimer) clearTimeout(this.stopTimer);
         if (!this.isStopping) {
             if (this.stopExecute === false) {
+                this.srmUpdateData();
                 this.intervalId = setInterval(() => {
                     this.srmUpdateData();
                 }, this.config.interval*1000);
