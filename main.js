@@ -79,9 +79,7 @@ class Srm extends utils.Adapter {
         // Force polling minimum to 60 seconds
         if (this.config.interval < 60) { this.config.interval = 60; }
 
-        setTimeout(async () => {
-            this.srmConnect();
-        }, 5000);
+        this.srmConnect();
     }
 
     /**
@@ -110,7 +108,7 @@ class Srm extends utils.Adapter {
     async setSentryLogging(value) {
         try {
             value = value === true;
-            const idSentry = `system.this.${this.namespace}.plugins.sentry.enabled`;
+            const idSentry = `system.adapter.${this.namespace}.plugins.sentry.enabled`;
             const stateSentry = await this.getForeignStateAsync(idSentry);
             if (stateSentry && stateSentry.val !== value) {
                 await this.setForeignStateAsync(idSentry, value);
@@ -139,8 +137,12 @@ class Srm extends utils.Adapter {
             this.srmCyclicCall();
 
         } catch (error) {
-            this.log.error(error);
-            this.srmStop();
+            this.log.error(error.message + " for " + this.config.IP);
+            if (error.message === 'Request timeout') {
+                this.srmReconnect();
+            } else {
+                this.srmStop();
+            }
             return;
         }
     }
@@ -150,13 +152,14 @@ class Srm extends utils.Adapter {
     async srmReconnect() {
         this.client = null;
         this.client = new this.SrmClient();
+        this.log.info('Try to reconnect in 60s ...');
         setTimeout(async () => {
             this.srmConnect();
-        }, 5000);
+        }, 60000);
     }
 
     // ---------------------------------------------------------------------------------------------
-    // Is called when adapter shuts down - callback has to be called under any circumstances!
+    // Stop communication with Synology router
     async srmStop() {
         if (this.stopTimer) clearTimeout(this.stopTimer);
 
@@ -254,9 +257,7 @@ class Srm extends utils.Adapter {
             if (String(error) === 'Error: Not connected') {
                 this.log.error('Router is not connected, try new reconnect in 90s');
                 this.stopExecute = true;
-                setTimeout(async () => {
-                    this.srmReconnect();
-                }, 90000);
+                this.srmReconnect();
             } else {
                 this.log.error(error);
                 this.stopExecute = true;
@@ -283,4 +284,3 @@ if (require.main !== module) {
     // otherwise start the instance directly
     new Srm();
 }
-

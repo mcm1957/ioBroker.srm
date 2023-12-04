@@ -4,6 +4,7 @@
 	"items": {
 		"label": "Synology Router",
 		"IP": {
+			"newLine": true,
 			"type": "text",
 			"sm": 12,
 			"md": 6,
