@@ -27,6 +27,58 @@ Create a new instance of the adapter and enter the IP address of your router. Th
 ### Objects
 The adapter creates the following objects:
 
+## router
+* IPV4_IP: IP4 address of the router
+* IPV4_status: Status of the IPV4 connection
+* IPV6_IP: IP6 address of the router
+* IPV6_status: Status of the IPV4 connection
+
+## devices
+JSON table for the following device states:
+
+* all: All known devices
+* mesh: All mesh devices
+* online: All online devices
+* online_ethernet: All online devices connected via ethernet
+* online wifi: All online devices connected via wifi
+
+Each JSON table has the following objects for each device:
+
+* connection: Connection type (Eternet, Wifi)
+* dev_type: Device type (Computer, Mobile, etc.)
+* hostname: Hostname of the device
+* ip6_addr: IP6 address of the device
+* ip_addr: IP4 address of the device
+* is_banned: Is the device banned
+* is_beamforming_on: Is beamforming enabled
+* is_high_qos_on: Is high QOS enabled
+* is_low_qos_on: Is low QOS enabled
+* is_manual_device_type: Is the device type manually set
+* is_manual_hostname: Is the hostname manually set
+* is_online: Is the device online
+* is_qos_on: Is QOS enabled
+* is_wireless: Is the device connected via wifi
+* mac: MAC address of the device
+* mesh_node_id: ID of the mesh node
+* mesh_node_name: Name of the mesh node
+
+## info
+* connection: Status of the connection to the router
+
+## mesh
+List of mesh nodes. Each mesh nodes has the following objects:
+
+* band: Uplink band
+* connected_devices: Number of connected devices
+* current_tx_rate: Current transmission rate
+* current_rx_rate: Current reception rate
+* name: Name of the mesh node
+* network_status: Status of the network
+* node_id: ID of the mesh node
+* node_status: Status of the mesh node
+* parent_node_id: ID of the parent node
+* signal_strength: Signal strength
+
 ### Sentry
 
 What is Sentry.io and what is reported to the servers of that company? `Sentry.io` is a service for developers to get an overview about errors from their applications. And exactly this is implemented in this adapter.
@@ -35,12 +87,35 @@ When the adapter crashes or another Code error happens, this error message that 
 
 <a name="Revision-History"></a>
 
-## Revision History
+## Changelog
 
 ### **WORK IN PROGRESS**
 
+- first public release
+
 ### Version 0.0.1
 
--   First public release
+- initial release
 
+## License
+MIT License
 
+Copyright (c) 2023 stephan stricker <stephan.stricker@outlook.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
