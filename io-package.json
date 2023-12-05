@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "srm",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "news": {
+      "0.1.1": {
+        "en": "enabled NPM deployment",
+        "de": "nPM-Bereitstellung",
+        "ru": "включено развертывание NPM",
+        "pt": "implantação NPM ativada",
+        "nl": "_",
+        "fr": "déploiement des mécanismes nationaux de prévention",
+        "it": "implementazione NPM abilitata",
+        "es": "habilitado para el despliegue del mecanismo nacional de prevención",
+        "pl": "umożliwić NPM rozmieszczenie",
+        "uk": "ввімкнути розгортання NPM",
+        "zh-cn": "部署国家民警"
+      },
       "0.1.0": {
         "en": "first public release",
         "de": "erste öffentliche veröffentlichung",
