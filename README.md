@@ -89,7 +89,7 @@ When the adapter crashes or another Code error happens, this error message that 
 
 ## Changelog
 
-### WORK IN PROGRESS
+### **WORK IN PROGRESS**
 
 - enabled NPM deployment
 
