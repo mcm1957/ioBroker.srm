@@ -88,6 +88,11 @@ When the adapter crashes or another Code error happens, this error message that 
 <a name="Revision-History"></a>
 
 ## Changelog
+
+### WORK IN PROGRESS
+
+- enabled NPM deployment
+
 ### 0.1.0 (2023-12-05)
 
 - first public release
