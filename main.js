@@ -232,8 +232,8 @@ class Srm extends utils.Adapter {
                 // Create mesh node default states
                 await Promise.all(this.objects.mesh.map(async o => {
                     // @ts-ignore
-                    await this.setObjectNotExistsAsync('mesh.' + node.name + (o._id ? '.' + o._id : ''), o);
-                    this.log.debug('Create state for mesh' + node.name + '.' + o._id);
+                    await this.setObjectNotExistsAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + (o._id ? '.' + o._id : ''), o);
+                    this.log.debug('Create state for mesh' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.' + o._id);
                 }));
 
                 await this.setStateAsync('mesh.' + node.name + '.band', { val: node.band, ack: true });
