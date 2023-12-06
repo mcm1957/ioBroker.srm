@@ -157,7 +157,7 @@ class Srm extends utils.Adapter {
         this.client = null;
         this.client = new this.SrmClient();
         this.log.info('Try to reconnect in 60s ...');
-        setTimeout(async () => {
+        this.setTimeout(async () => {
             this.srmConnect();
         }, 60000);
     }
@@ -169,7 +169,7 @@ class Srm extends utils.Adapter {
 
         // Stop only if schedule mode
         if (this.common && this.common.mode == 'schedule') {
-            this.stopTimer = setTimeout(async () =>{
+            this.stopTimer = this.setTimeout(async () =>{
                 this.stopTimer = null;
                 if (this.intervalId) clearInterval(this.intervalId);
                 this.isStopping = true;
