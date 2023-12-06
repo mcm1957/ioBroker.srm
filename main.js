@@ -238,8 +238,8 @@ class Srm extends utils.Adapter {
 
                 await this.setStateAsync('mesh.' + node.name + '.band', { val: node.band, ack: true });
                 await this.setStateAsync('mesh.' + node.name + '.connected_devices', { val: node.connected_devices, ack: true });
-                await this.setStateAsync('mesh.' + node.name + '.current_rate_rx', { val: node.current_rate_rx, ack: true });
-                await this.setStateAsync('mesh.' + node.name + '.current_rate_tx', { val: node.current_rate_tx, ack: true });
+                await this.setStateAsync('mesh.' + node.name + '.current_rate_rx', { val: node.current_rate_rx/1000, ack: true });
+                await this.setStateAsync('mesh.' + node.name + '.current_rate_tx', { val: node.current_rate_tx/1000, ack: true });
                 await this.setStateAsync('mesh.' + node.name + '.network_status', { val: node.network_status, ack: true });
                 await this.setStateAsync('mesh.' + node.name + '.node_id', { val: node.node_id, ack: true });
                 await this.setStateAsync('mesh.' + node.name + '.node_status', { val: node.node_status, ack: true });
