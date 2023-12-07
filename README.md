@@ -10,7 +10,7 @@
 
 ## Introduction
 
-This is an iobroker adapter to connect to Synology routers. The adapter uses the Synology API to get the data. The adapter is tested with the SRM version 1.3.1. and router model RT6600 but should work with other models as well.
+This is an iobroker adapter to connect to [Synology](https://www.synology.com/) routers. The adapter uses the Synology API to get the data. The adapter is tested with the SRM version 1.3.1. and router model RT6600 but should work with other models as well.
 
 Thanks to 
 
