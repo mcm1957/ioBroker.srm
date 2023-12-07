@@ -157,7 +157,7 @@ class Srm extends utils.Adapter {
         this.client = null;
         this.client = new this.SrmClient();
         this.log.info('Try to reconnect in 60s ...');
-        setTimeout(async () => {
+        this.setTimeout(async () => {
             this.srmConnect();
         }, 60000);
     }
@@ -169,7 +169,7 @@ class Srm extends utils.Adapter {
 
         // Stop only if schedule mode
         if (this.common && this.common.mode == 'schedule') {
-            this.stopTimer = setTimeout(async () =>{
+            this.stopTimer = this.setTimeout(async () =>{
                 this.stopTimer = null;
                 if (this.intervalId) clearInterval(this.intervalId);
                 this.isStopping = true;
@@ -232,14 +232,14 @@ class Srm extends utils.Adapter {
                 // Create mesh node default states
                 await Promise.all(this.objects.mesh.map(async o => {
                     // @ts-ignore
-                    await this.setObjectNotExistsAsync('mesh.' + node.name + (o._id ? '.' + o._id : ''), o);
-                    this.log.debug('Create state for mesh' + node.name + '.' + o._id);
+                    await this.setObjectNotExistsAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + (o._id ? '.' + o._id : ''), o);
+                    this.log.debug('Create state for mesh' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.' + o._id);
                 }));
 
                 await this.setStateAsync('mesh.' + node.name + '.band', { val: node.band, ack: true });
                 await this.setStateAsync('mesh.' + node.name + '.connected_devices', { val: node.connected_devices, ack: true });
-                await this.setStateAsync('mesh.' + node.name + '.current_rate_rx', { val: node.current_rate_rx, ack: true });
-                await this.setStateAsync('mesh.' + node.name + '.current_rate_tx', { val: node.current_rate_tx, ack: true });
+                await this.setStateAsync('mesh.' + node.name + '.current_rate_rx', { val: node.current_rate_rx/1000, ack: true });
+                await this.setStateAsync('mesh.' + node.name + '.current_rate_tx', { val: node.current_rate_tx/1000, ack: true });
                 await this.setStateAsync('mesh.' + node.name + '.network_status', { val: node.network_status, ack: true });
                 await this.setStateAsync('mesh.' + node.name + '.node_id', { val: node.node_id, ack: true });
                 await this.setStateAsync('mesh.' + node.name + '.node_status', { val: node.node_status, ack: true });

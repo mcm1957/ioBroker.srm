@@ -6,6 +6,7 @@
 		"IP": {
 			"newLine": true,
 			"type": "text",
+			"xs": 12,
 			"sm": 12,
 			"md": 6,
 			"lg": 6,
@@ -14,6 +15,7 @@
 		"port": {
 			"type": "text",
 			"label": "Port of the Synology router",
+			"xs": 12,
 			"sm": 12,
 			"md": 6,
 			"lg": 6,
@@ -24,6 +26,7 @@
 			"newLine": true,
 			"type": "text",
 			"label": "User name",
+			"xs": 12,
 			"sm": 12,
 			"md": 6,
 			"lg": 6
@@ -31,6 +34,7 @@
 		"password": {
 			"type": "password",
 			"label": "User password",
+			"xs": 12,
 			"sm": 12,
 			"md": 6,
 			"lg": 6
@@ -39,6 +43,7 @@
 			"newLine": true,
 			"type": "number",
 			"label": "Polling interval (in seconds)",
+			"xs": 12,
 			"sm": 12,
 			"md": 6,
 			"lg": 6
@@ -46,6 +51,7 @@
 		"sentry": {
 			"type": "checkbox",
 			"label": "Allow anonymous usage statistics with Sentry",
+			"xs": 12,
 			"sm": 12,
 			"md": 6,
 			"lg": 6
