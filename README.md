@@ -89,7 +89,7 @@ When the adapter crashes or another Code error happens, this error message that 
 
 ## Changelog
 
-## **WORK IN PROGRESS**
+### **WORK IN PROGRESS**
 - minor bug fixes
 
 ### 0.1.3 (2023-12-06)
