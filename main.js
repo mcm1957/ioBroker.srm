@@ -166,16 +166,6 @@ class Srm extends utils.Adapter {
     // Stop communication with Synology router
     async srmStop() {
         if (this.stopTimer) this.clearTimeout(this.stopTimer);
-
-        // Stop only if schedule mode
-        if (this.common && this.common.mode == 'schedule') {
-            this.stopTimer = this.setTimeout(async () =>{
-                this.stopTimer = null;
-                if (this.intervalId) this.clearInterval(this.intervalId);
-                this.isStopping = true;
-                this.srmStop();
-            }, 30000);
-        }
     }
 
     // ---------------------------------------------------------------------------------------------
