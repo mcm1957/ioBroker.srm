@@ -219,7 +219,7 @@ class Srm extends utils.Adapter {
             this.log.debug(`Mesh nodes: ${JSON.stringify(meshNodes)}`);
             await this.setStateAsync('devices.mesh', { val: JSON.stringify(meshNodes), ack: true });
             for (const node of meshNodes) {
-                const node_name = node.name.replace(this.FORBIDDEN_CHARS, '_')
+                const node_name = node.name.replace(this.FORBIDDEN_CHARS, '_');
                 // Create mesh node default states
                 await Promise.all(this.objects.mesh.map(async o => {
                     // @ts-ignore
