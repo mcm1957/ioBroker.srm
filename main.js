@@ -108,7 +108,7 @@ class Srm extends utils.Adapter {
     async setSentryLogging(value) {
         try {
             value = value === true;
-            const idSentry = `system.adapter.${this.namespace}.plugins.sentry.enabled`;
+            const idSentry = 'system.adapter.${this.namespace}.plugins.sentry.enabled';
             const stateSentry = await this.getForeignStateAsync(idSentry);
             if (stateSentry && stateSentry.val !== value) {
                 await this.setForeignStateAsync(idSentry, value);
@@ -185,10 +185,12 @@ class Srm extends utils.Adapter {
     // ---------------------------------------------------------------------------------------------
     // Get data from Synology router
     async srmUpdateData() {
+        this.log.info('Polling data from router ${this.config.IP}');
+
         try {
             // Get connection status
             const conStatus = await this.client.getConnectionStatus();
-            this.log.debug(`Connection status: ${JSON.stringify(conStatus)}`);
+            this.log.debug('Connection status: ${JSON.stringify(conStatus)}');
             await this.setStateAsync('router.IPV4_status', { val: conStatus.ipv4.conn_status, ack: true });
             await this.setStateAsync('router.IPV4_IP', { val: conStatus.ipv4.ip, ack: true });
             await this.setStateAsync('router.IPV6_status', { val: conStatus.ipv6.conn_status, ack: true });
@@ -196,27 +198,27 @@ class Srm extends utils.Adapter {
 
             // Get complete device list
             const deviceAll = await this.client.getAllDevices();
-            this.log.debug(`Device list all: ${JSON.stringify(deviceAll)}`);
+            this.log.debug('Device list all: ${JSON.stringify(deviceAll)}');
             await this.setStateAsync('devices.all', { val: JSON.stringify(deviceAll), ack: true });
 
             // Get active device list
             const deviceOnline = deviceAll.filter(item => item.is_online === true);
-            this.log.debug(`Device list online: ${JSON.stringify(deviceOnline)}`);
+            this.log.debug('Device list online: ${JSON.stringify(deviceOnline)}');
             await this.setStateAsync('devices.online', { val: JSON.stringify(deviceOnline), ack: true });
 
             // Get active WIFI device list
             const deviceOnlineWifi = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === true);
-            this.log.debug(`Device list WIFI online: ${JSON.stringify(deviceOnlineWifi)}`);
+            this.log.debug('Device list WIFI online: ${JSON.stringify(deviceOnlineWifi)}');
             await this.setStateAsync('devices.online_wifi', { val: JSON.stringify(deviceOnlineWifi), ack: true });
 
             // Get active Ethernet device list
             const deviceOnlineEthernet = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === false);
-            this.log.debug(`Device list Ethernet online: ${JSON.stringify(deviceOnlineEthernet)}`);
+            this.log.debug('Device list Ethernet online: ${JSON.stringify(deviceOnlineEthernet)}');
             await this.setStateAsync('devices.online_ethernet', { val: JSON.stringify(deviceOnlineEthernet), ack: true });
 
             // Get mesh node data
             const meshNodes = await this.client.getMeshNodes();
-            this.log.debug(`Mesh nodes: ${JSON.stringify(meshNodes)}`);
+            this.log.debug('Mesh nodes: ${JSON.stringify(meshNodes)}');
             await this.setStateAsync('devices.mesh', { val: JSON.stringify(meshNodes), ack: true });
             for (const node of meshNodes) {
                 const node_name = node.name.replace(this.FORBIDDEN_CHARS, '_');
@@ -241,12 +243,12 @@ class Srm extends utils.Adapter {
 
             // Get live traffic
             const trafficLive = await this.client.getTraffic('live');
-            this.log.debug(`Live traffic: ${JSON.stringify(trafficLive)}`);
+            this.log.debug('Live traffic: ${JSON.stringify(trafficLive)}');
             await this.setStateAsync('traffic.live', { val: JSON.stringify(trafficLive), ack: true });
 
             // Get daily traffic
             // const trafficDaily = await client.getTraffic('day');
-            // this.log.debug(`Daily traffic: ${JSON.stringify(trafficDaily)}`);
+            // this.log.debug('Daily traffic: ${JSON.stringify(trafficDaily)}');
             // await this.setStateAsync('traffic.daily', { val: JSON.stringify(trafficDaily), ack: true });
 
         } catch (error) {
