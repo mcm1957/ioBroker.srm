@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "srm",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "news": {
+      "0.1.5": {
+        "en": "minor bug fixes",
+        "de": "kleine fehlerbehebungen",
+        "ru": "мелкие исправления ошибок",
+        "pt": "pequenas correções de bugs",
+        "nl": "minor bug fixes",
+        "fr": "corrections mineures",
+        "it": "correzioni di bug minori",
+        "es": "correcciones de errores menores",
+        "pl": "drobny błęd",
+        "uk": "незначні виправлення помилок",
+        "zh-cn": "b 轻微混凝土"
+      },
       "0.1.4": {
         "en": "minor bug fixes",
         "de": "kleine fehlerbehebungen",
