@@ -89,7 +89,7 @@ class Srm extends utils.Adapter {
     async onUnload(callback) {
         try {
             if (this.intervalId) {
-                clearInterval(this.intervalId);
+                this.clearInterval(this.intervalId);
                 this.intervalId = null;
             }
             await this.client.logout();
@@ -165,13 +165,13 @@ class Srm extends utils.Adapter {
     // ---------------------------------------------------------------------------------------------
     // Stop communication with Synology router
     async srmStop() {
-        if (this.stopTimer) clearTimeout(this.stopTimer);
+        if (this.stopTimer) this.clearTimeout(this.stopTimer);
 
         // Stop only if schedule mode
         if (this.common && this.common.mode == 'schedule') {
             this.stopTimer = this.setTimeout(async () =>{
                 this.stopTimer = null;
-                if (this.intervalId) clearInterval(this.intervalId);
+                if (this.intervalId) this.clearInterval(this.intervalId);
                 this.isStopping = true;
                 this.srmStop();
             }, 30000);
@@ -181,11 +181,11 @@ class Srm extends utils.Adapter {
     // ---------------------------------------------------------------------------------------------
     // Run in circles until stopped
     srmCyclicCall() {
-        if (this.stopTimer) clearTimeout(this.stopTimer);
+        if (this.stopTimer) this.clearTimeout(this.stopTimer);
         if (!this.isStopping) {
             if (this.stopExecute === false) {
                 this.srmUpdateData();
-                this.intervalId = setInterval(() => {
+                this.intervalId = this.setInterval(() => {
                     this.srmUpdateData();
                 }, this.config.interval*1000);
             }
