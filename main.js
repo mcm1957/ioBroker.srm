@@ -219,22 +219,23 @@ class Srm extends utils.Adapter {
             this.log.debug(`Mesh nodes: ${JSON.stringify(meshNodes)}`);
             await this.setStateAsync('devices.mesh', { val: JSON.stringify(meshNodes), ack: true });
             for (const node of meshNodes) {
+                const node_name = node.name.replace(this.FORBIDDEN_CHARS, '_')
                 // Create mesh node default states
                 await Promise.all(this.objects.mesh.map(async o => {
                     // @ts-ignore
-                    await this.setObjectNotExistsAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_').replace(this.FORBIDDEN_CHARS, '_') + (o._id ? '.' + o._id : ''), o);
-                    this.log.debug('Create state for mesh' + node.name.replace(this.FORBIDDEN_CHARS, '_').replace(this.FORBIDDEN_CHARS, '_') + '.' + o._id);
+                    await this.setObjectNotExistsAsync('mesh.' + node_name + (o._id ? '.' + o._id : ''), o);
+                    this.log.debug('Create state for mesh' + node_name.replace(this.FORBIDDEN_CHARS, '_') + '.' + o._id);
                 }));
 
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.band', { val: node.band, ack: true });
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.connected_devices', { val: node.connected_devices, ack: true });
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.current_rate_rx', { val: node.current_rate_rx/1000, ack: true });
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.current_rate_tx', { val: node.current_rate_tx/1000, ack: true });
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.network_status', { val: node.network_status, ack: true });
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.node_id', { val: node.node_id, ack: true });
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.node_status', { val: node.node_status, ack: true });
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.parent_node_id', { val: node.parent_node_id, ack: true });
-                await this.setStateAsync('mesh.' + node.name.replace(this.FORBIDDEN_CHARS, '_') + '.signal_strength', { val: node.signalstrength, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.band', { val: node.band, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.connected_devices', { val: node.connected_devices, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.current_rate_rx', { val: node.current_rate_rx/1000, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.current_rate_tx', { val: node.current_rate_tx/1000, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.network_status', { val: node.network_status, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.node_id', { val: node.node_id, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.node_status', { val: node.node_status, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.parent_node_id', { val: node.parent_node_id, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.signal_strength', { val: node.signalstrength, ack: true });
             }
             // await this.setStateAsync('traffic.live', { val: JSON.stringify(trafficLive), ack: true });
 
