@@ -88,7 +88,7 @@ When the adapter crashes or another Code error happens, this error message that 
 <a name="Revision-History"></a>
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 0.1.4 (2023-12-10)
 - minor bug fixes
 
 ### 0.1.3 (2023-12-06)
