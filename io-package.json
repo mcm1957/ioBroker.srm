@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "srm",
-    "version": "0.1.5",
+    "version": "0.1.6",
     "news": {
+      "0.1.6": {
+        "en": "Account for different API versions",
+        "de": "Konto für verschiedene API-Versionen",
+        "ru": "Аккаунт для разных версий API",
+        "pt": "Conta para diferentes versões de API",
+        "nl": "Account voor verschillende API versies",
+        "fr": "Compte pour différentes versions API",
+        "it": "Account per diverse versioni API",
+        "es": "Cuenta para diferentes versiones de API",
+        "pl": "Relacja dla różnych wersji API",
+        "uk": "Рахунок для різних версій API",
+        "zh-cn": "不同协会版本的核算"
+      },
       "0.1.5": {
         "en": "minor bug fixes",
         "de": "kleine fehlerbehebungen",
@@ -80,19 +93,6 @@
         "pl": "pierwsze publiczne wydanie",
         "uk": "перший публічний реліз",
         "zh-cn": "首次公开释放"
-      },
-      "0.0.1": {
-        "en": "initial release",
-        "de": "Erstveröffentlichung",
-        "ru": "Начальная версия",
-        "pt": "lançamento inicial",
-        "nl": "Eerste uitgave",
-        "fr": "Première version",
-        "it": "Versione iniziale",
-        "es": "Versión inicial",
-        "pl": "Pierwsze wydanie",
-        "uk": "Початкова версія",
-        "zh-cn": "首次出版"
       }
     },
     "titleLang": {

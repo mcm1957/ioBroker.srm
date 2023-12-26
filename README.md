@@ -88,7 +88,7 @@ When the adapter crashes or another Code error happens, this error message that 
 <a name="Revision-History"></a>
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 0.1.6 (2023-12-26)
 - Account for different API versions
 
 ### 0.1.5 (2023-12-10)
