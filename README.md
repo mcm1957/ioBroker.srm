@@ -99,6 +99,7 @@ When the adapter crashes or another Code error happens, this error message that 
 ## Changelog
 ### **WORK IN PROGRESS**
 - Added new section for WIFI settings. Some settings can be changed via the adapter.
+- Account for different API versions
 
 ### 0.1.6 (2023-12-26)
 - Account for different API versions
