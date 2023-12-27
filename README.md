@@ -97,7 +97,7 @@ When the adapter crashes or another Code error happens, this error message that 
 <a name="Revision-History"></a>
 
 ## Changelog
-### **WORK IN PROGRESS**
+### 0.2.0 (2023-12-27)
 - Added new section for WIFI settings. Some settings can be changed via the adapter.
 - Account for different API versions
 

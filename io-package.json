@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "srm",
-    "version": "0.1.6",
+    "version": "0.2.0",
     "news": {
+      "0.2.0": {
+        "en": "Added new section for WIFI settings. Some settings can be changed via the adapter.\nAccount for different API versions",
+        "de": "Neuer Abschnitt für WIFI-Einstellungen hinzugefügt. Einige Einstellungen können über den Adapter geändert werden.\nKonto für verschiedene API-Versionen",
+        "ru": "Добавлен новый раздел для настроек WIFI. Некоторые настройки могут быть изменены через адаптер.\nАккаунт для разных версий API",
+        "pt": "Adicionada nova seção para configurações de WIFI. Algumas configurações podem ser alteradas através do adaptador.\nConta para diferentes versões de API",
+        "nl": "Voegde nieuwe sectie toe voor WIFI settings. Sommige instellingen kunnen veranderd worden via de adapter.\nAccount voor verschillende API versies",
+        "fr": "Ajout d'une nouvelle section pour les réglages WIFI. Certains paramètres peuvent être changés via l'adaptateur.\nCompte pour différentes versions API",
+        "it": "Aggiunta nuova sezione per le impostazioni WIFI. Alcune impostazioni possono essere modificate tramite l'adattatore.\nAccount per diverse versioni API",
+        "es": "Se agregó nueva sección para la configuración de WIFI. Algunos ajustes se pueden cambiar a través del adaptador.\nCuenta para diferentes versiones de API",
+        "pl": "Dodano nowe odcinki dla ustawień WIFI. Niektóre ustawienia mogą być zmieniane poprzez adapter.\nRelacja dla różnych wersji API",
+        "uk": "Додано новий розділ для налаштування WIFI. Деякі налаштування можна змінити за допомогою адаптера.\nРахунок для різних версій API",
+        "zh-cn": "增加新的知识产权组织伙伴环境科。 有些环境可以通过适应者改变。.\n不同协会版本的核算"
+      },
       "0.1.6": {
         "en": "Account for different API versions",
         "de": "Konto für verschiedene API-Versionen",
@@ -80,19 +93,6 @@
         "pl": "umożliwić NPM rozmieszczenie",
         "uk": "ввімкнути розгортання NPM",
         "zh-cn": "部署国家民警"
-      },
-      "0.1.0": {
-        "en": "first public release",
-        "de": "erste öffentliche veröffentlichung",
-        "ru": "первый публичный релиз",
-        "pt": "primeiro lançamento público",
-        "nl": "eerste openbare vrijlating",
-        "fr": "premier communiqué public",
-        "it": "primo rilascio pubblico",
-        "es": "primera publicación pública",
-        "pl": "pierwsze publiczne wydanie",
-        "uk": "перший публічний реліз",
-        "zh-cn": "首次公开释放"
       }
     },
     "titleLang": {

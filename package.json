@@ -1,6 +1,6 @@
 {
   "name": "iobroker.srm",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "This adapter allows you to connect to a Synology router",
   "author": {
     "name": "stephan stricker",
