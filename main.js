@@ -17,7 +17,6 @@ class Srm extends utils.Adapter {
             name: 'srm',
         });
         this.on('ready', this.onReady.bind(this));
-        // this.on('stateChange', this.onStateChange.bind(this));
         // this.on('objectChange', this.onObjectChange.bind(this));
         // this.on('message', this.onMessage.bind(this));
         this.on('unload', this.onUnload.bind(this));
@@ -32,6 +31,7 @@ class Srm extends utils.Adapter {
         this.stopTimer = null;
         this.isStopping = false;
         this.stopExecute = false;
+        this.skipExecute = false;
         this.intervalId = null;
     }
     /**
@@ -56,10 +56,10 @@ class Srm extends utils.Adapter {
 
         // Create traffic default states
         await Promise.all(this.objects.devices.map(async o => {
-                // @ts-ignore
-                await this.setObjectNotExistsAsync('devices' + (o._id ? '.' + o._id : ''), o);
-                this.log.debug('Create state for devices.' + o._id);
-            }));
+            // @ts-ignore
+            await this.setObjectNotExistsAsync('devices' + (o._id ? '.' + o._id : ''), o);
+            this.log.debug('Create state for devices.' + o._id);
+        }));
 
         // Create traffic default states
         await Promise.all(this.objects.traffic.map(async o => {
@@ -80,6 +80,61 @@ class Srm extends utils.Adapter {
         if (this.config.interval < 60) { this.config.interval = 60; }
 
         this.srmConnect();
+    }
+
+    /**
+     * Is called if a subscribed state changes
+     * @param {string} id
+     * @param {ioBroker.State | null | undefined} state
+     */
+    async onStateChange(id, state) {
+        if (!state || this.skipExecute) {
+            return;
+        }
+
+        if (id.includes('.wifi.') && state.ack === false) {
+            try {
+                this.skipExecute = true;
+
+                // Get wifi data
+                const wifiSettings = await this.client.getWifiNetworkSettings();
+                this.log.debug('Wifi settings: ${JSON.stringify(wifiSettings)}');
+
+                for (const profile of wifiSettings.profiles) {
+                    const wifi_name = profile.radio_list[0].ssid.replace(this.FORBIDDEN_CHARS, '_');
+                    // Change WIFI enable
+                    if (id.endsWith('wifi.' + wifi_name + '.enable') && (profile.radio_list[0].enable != state.val)) {
+                        profile.radio_list[0].enable = state.val;
+                        await this.client.setWifiNetworkSettings(wifiSettings.profiles);
+                        this.log.info('Wifi settings enable for ' + wifi_name + ' changed to ' + state.val);
+                    }
+                    // Change client isolation
+                    if (id.endsWith('wifi.' + wifi_name + '.enable_client_isolation') && (profile.radio_list[0].enable_client_isolation != state.val)) {
+                        profile.radio_list[0].enable_client_isolation = state.val;
+                        await this.client.setWifiNetworkSettings(wifiSettings.profiles);
+                        this.log.info('Wifi settings enable_client_isolation for ' + wifi_name + ' changed to ' + state.val);
+                    }
+                    // Change SSID visibility
+                    if (id.endsWith('wifi.' + wifi_name + '.hide_ssid') && (profile.radio_list[0].hide_ssid != state.val)) {
+                        profile.radio_list[0].hide_ssid = state.val;
+                        await this.client.setWifiNetworkSettings(wifiSettings.profiles);
+                        this.log.info('Wifi settings hide SSID ' + wifi_name + ' changed to ' + state.val);
+                    }
+                    // Change schedule enable
+                    if (id.endsWith('wifi.' + wifi_name + '.schedule_enable') && (profile.radio_list[0].schedule.enable != state.val)) {
+                        profile.radio_list[0].schedule.enable = state.val;
+                        await this.client.setWifiNetworkSettings(wifiSettings.profiles);
+                        this.log.info('Wifi settings schedule for ' + wifi_name + ' changed to ' + state.val);
+                    }
+                }
+
+                // Wait for 3s before changing again or updating data
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                this.skipExecute = false;
+            } catch (error) {
+                this.log.info('Wifi settings error for ' + id + ' error ' + error.message);
+            }
+        }
     }
 
     /**
@@ -138,6 +193,13 @@ class Srm extends utils.Adapter {
             // Set connection indicator
             this.setState('info.connection', true, true);
 
+            try {
+                // detect changes of objects
+                await this.subscribeStates('wifi.*');
+            } catch (error) {
+                this.log.error(`Cannot subscribe on object: ${error}`);
+            }
+
             this.srmCyclicCall();
 
         } catch (error) {
@@ -176,8 +238,14 @@ class Srm extends utils.Adapter {
             if (this.stopExecute === false) {
                 this.srmUpdateData();
                 this.intervalId = this.setInterval(() => {
-                    this.srmUpdateData();
-                }, this.config.interval*1000);
+                    // Skip next update after changing wifi settings
+                    if (this.skipExecute === false){
+                        this.srmUpdateData();
+                    }
+                    else {
+                        this.skipExecute = false;
+                    }
+                }, this.config.interval * 1000);
             }
         }
     }
@@ -207,12 +275,12 @@ class Srm extends utils.Adapter {
             await this.setStateAsync('devices.online', { val: JSON.stringify(deviceOnline), ack: true });
 
             // Get active WIFI device list
-            const deviceOnlineWifi = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === true);
+            const deviceOnlineWifi = deviceAll.filter(item => item.is_online === true && item.is_wireless === true);
             this.log.debug('Device list WIFI online: ${JSON.stringify(deviceOnlineWifi)}');
             await this.setStateAsync('devices.online_wifi', { val: JSON.stringify(deviceOnlineWifi), ack: true });
 
             // Get active Ethernet device list
-            const deviceOnlineEthernet = deviceAll.filter(item =>  item.is_online === true && item.is_wireless === false);
+            const deviceOnlineEthernet = deviceAll.filter(item => item.is_online === true && item.is_wireless === false);
             this.log.debug('Device list Ethernet online: ${JSON.stringify(deviceOnlineEthernet)}');
             await this.setStateAsync('devices.online_ethernet', { val: JSON.stringify(deviceOnlineEthernet), ack: true });
 
@@ -226,20 +294,39 @@ class Srm extends utils.Adapter {
                 await Promise.all(this.objects.mesh.map(async o => {
                     // @ts-ignore
                     await this.setObjectNotExistsAsync('mesh.' + node_name + (o._id ? '.' + o._id : ''), o);
-                    this.log.debug('Create state for mesh' + node_name.replace(this.FORBIDDEN_CHARS, '_') + '.' + o._id);
+                    this.log.debug('Create state for mesh ' + node_name.replace(this.FORBIDDEN_CHARS, '_') + '.' + o._id);
                 }));
 
                 await this.setStateAsync('mesh.' + node_name + '.band', { val: node.band, ack: true });
                 await this.setStateAsync('mesh.' + node_name + '.connected_devices', { val: node.connected_devices, ack: true });
-                await this.setStateAsync('mesh.' + node_name + '.current_rate_rx', { val: node.current_rate_rx/1000, ack: true });
-                await this.setStateAsync('mesh.' + node_name + '.current_rate_tx', { val: node.current_rate_tx/1000, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.current_rate_rx', { val: node.current_rate_rx / 1000, ack: true });
+                await this.setStateAsync('mesh.' + node_name + '.current_rate_tx', { val: node.current_rate_tx / 1000, ack: true });
                 await this.setStateAsync('mesh.' + node_name + '.network_status', { val: node.network_status, ack: true });
                 await this.setStateAsync('mesh.' + node_name + '.node_id', { val: node.node_id, ack: true });
                 await this.setStateAsync('mesh.' + node_name + '.node_status', { val: node.node_status, ack: true });
                 await this.setStateAsync('mesh.' + node_name + '.parent_node_id', { val: node.parent_node_id, ack: true });
                 await this.setStateAsync('mesh.' + node_name + '.signal_strength', { val: node.signalstrength, ack: true });
             }
-            // await this.setStateAsync('traffic.live', { val: JSON.stringify(trafficLive), ack: true });
+
+            // Get wifi data
+            const wifiSettings = await this.client.getWifiNetworkSettings();
+            this.log.debug('Wifi settings: ${JSON.stringify(wifiSettings)}');
+
+            for (const profile of wifiSettings.profiles) {
+                const wifi_name = profile.radio_list[0].ssid.replace(this.FORBIDDEN_CHARS, '_');
+                // Create mesh node default states
+                await Promise.all(this.objects.wifi.map(async o => {
+                    // @ts-ignore
+                    await this.setObjectNotExistsAsync('wifi.' + wifi_name + (o._id ? '.' + o._id : ''), o);
+                    this.log.debug('Create state for wifi ' + wifi_name.replace(this.FORBIDDEN_CHARS, '_') + '.' + o._id);
+                }));
+
+                await this.setStateAsync('wifi.' + wifi_name + '.enable', { val: profile.radio_list[0].enable, ack: true });
+                await this.setStateAsync('wifi.' + wifi_name + '.enable_client_isolation', { val: profile.radio_list[0].enable_client_isolation, ack: true });
+                await this.setStateAsync('wifi.' + wifi_name + '.hide_ssid', { val: profile.radio_list[0].hide_ssid, ack: true });
+                await this.setStateAsync('wifi.' + wifi_name + '.mac_filter', { val: profile.radio_list[0].mac_filter.profile_id, ack: true });
+                await this.setStateAsync('wifi.' + wifi_name + '.schedule_enable', { val: profile.radio_list[0].schedule.enable, ack: true });
+            }
 
             // Get live traffic
             const trafficLive = await this.client.getTraffic('live');
@@ -251,13 +338,15 @@ class Srm extends utils.Adapter {
             // this.log.debug('Daily traffic: ${JSON.stringify(trafficDaily)}');
             // await this.setStateAsync('traffic.daily', { val: JSON.stringify(trafficDaily), ack: true });
 
+            this.on('stateChange', this.onStateChange.bind(this));
+
         } catch (error) {
             if (String(error) === 'Error: Not connected') {
                 this.log.error('Router is not connected, try new reconnect in 90s');
                 this.stopExecute = true;
                 this.srmReconnect();
             } else {
-                this.log.error(error);
+                this.log.error('Error updating data: ' + error.message);
                 this.stopExecute = true;
             }
         }
