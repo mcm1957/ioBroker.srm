@@ -15,6 +15,7 @@
   "homepage": "https://github.com/iobroker-community-adapters/ioBroker.srm",
   "license": "MIT",
   "keywords": [
+    "ioBroker",
     "SRM",
     "Synology",
     "Router"
