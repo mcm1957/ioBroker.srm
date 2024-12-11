@@ -122,7 +122,8 @@
       "zh-cn": "此适配器允许您连接到 Synology 路由器"
     },
     "authors": [
-      "stephan stricker <stephan.stricker@outlook.com>"
+      "stephan stricker <stephan.stricker@outlook.com>",
+      "iobroker-community-adapters <iobroker-community-adapters@gmx.de>"
     ],
     "keywords": [
       "SRM",
@@ -134,8 +135,8 @@
     "main": "main.js",
     "icon": "srm.png",
     "enabled": true,
-    "extIcon": "https://raw.githubusercontent.com/stephan1827/ioBroker.srm/main/admin/srm.png",
-    "readme": "https://github.com/stephan1827/ioBroker.srm/blob/main/README.md",
+    "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.srm/main/admin/srm.png",
+    "readme": "https://github.com/iobroker-community-adapters/ioBroker.srm/blob/main/README.md",
     "loglevel": "info",
     "mode": "daemon",
     "type": "hardware",
@@ -148,19 +149,14 @@
     },
     "dependencies": [
       {
-        "js-controller": ">=3.3.22"
+        "js-controller": ">=5.0.19"
       }
     ],
     "globalDependencies": [
       {
-        "admin": ">=5.1.13"
+        "admin": ">=6.17.14"
       }
-    ],
-    "plugins": {
-      "sentry": {
-        "dsn": "https://3f3fe25e5ef666f7b2ed834ad6876b58@o4506314323656704.ingest.sentry.io/4506314327326720"
-      }
-    }
+    ]
   },
   "encryptedNative": [
     "password"

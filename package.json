@@ -6,7 +6,13 @@
     "name": "stephan stricker",
     "email": "stephan.stricker@outlook.com"
   },
-  "homepage": "https://github.com/stephan1827/ioBroker.srm",
+  "contributors": [
+    {
+      "name": "iobroker-community-adapters",
+      "email": "iobroker-community-adapters@gmx.de"
+    }
+  ],
+  "homepage": "https://github.com/iobroker-community-adapters/ioBroker.srm",
   "license": "MIT",
   "keywords": [
     "SRM",
@@ -15,10 +21,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/stephan1827/ioBroker.srm.git"
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.srm.git"
   },
   "engines": {
-    "node": ">= 18"
+    "node": ">= 20"
   },
   "dependencies": {
     "@iobroker/adapter-core": "^3.2.2"
@@ -69,7 +75,7 @@
     "release": "release-script"
   },
   "bugs": {
-    "url": "https://github.com/stephan1827/ioBroker.srm/issues"
+    "url": "https://github.com/iobroker-community-adapters/ioBroker.srm/issues"
   },
   "readmeFilename": "README.md"
 }
