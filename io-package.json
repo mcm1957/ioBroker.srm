@@ -130,20 +130,22 @@
       "Synology",
       "Router"
     ],
-    "license": "MIT",
+    "licenseInformation": {
+      "license": "MIT",
+      "type": "free"
+    },
     "platform": "Javascript/Node.js",
-    "main": "main.js",
     "icon": "srm.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/iobroker-community-adapters/ioBroker.srm/main/admin/srm.png",
     "readme": "https://github.com/iobroker-community-adapters/ioBroker.srm/blob/main/README.md",
     "loglevel": "info",
+    "tier": 2,
     "mode": "daemon",
     "type": "hardware",
     "compact": true,
     "connectionType": "local",
     "dataSource": "poll",
-    "jsonConfig": true,
     "adminUI": {
       "config": "json"
     },
