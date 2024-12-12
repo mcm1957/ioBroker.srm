@@ -98,8 +98,7 @@ Thanks to
     ### **WORK IN PROGRESS**
 -->
 ## Changelog
-
-### **WORK IN PROGRESS**
+### 1.0.0 (2024-12-12)
 - (mcm1957) Adapter has been moved into iobroker-community-adapters organization
 - (mcm1957) Adapter requires node.js 20 now.
 - (mcm1957) Adapter requires js-controller 5 and admin 6 now.
